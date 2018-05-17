@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8"/>
+	<title>Projet</title>
+	<link rel="stylesheet" type="text/css" href="css.css">
+</head>
+
+<body>
+	<h1>Inscription</h1>
+	<form>
+		<fieldset>
+			<br/>
+			<label for="repId">Identifiant :</label>
+			<br/>
+			<input type="text" name="repId" id="repId" maxlength="10" required/>
+			<br/>
+			<br/>
+			<label for="=mdpIns">Mot de passe :</label>
+			<br/>
+			<input type="password" name="mdpIns" id="mdpIns" maxlength="10" required/>
+			<br/>
+			(votre mot de passe doit avoir au moins 7 caractères)
+			<br/>
+			<br/>
+			<label for="=mdpvIns">Confirmer  votre mot de passe : </label>
+			<br/>
+			<input type="password" name="mdpvIns" id="mdpvIns" maxlength="10" required/>
+			<br/>
+		</fieldset>
+	</form>
+	<button id="valider" onclick="valider()">Valider</button>
+	<br/>
+	<button id="retour" onclick="document.location.href='menu.html';">Retour</button>
+
+	<script type="text/javascript">
+		function valider(){
+			var idIns=document.getElementById("repId").value;
+			var repMdp=document.getElementById("mdpIns").value;
+			var repMdpv=document.getElementById("mdpvIns").value;
+			if(repMdpv == repMdp && repMdp.length>6){
+				document.location.href='menu.html';
+				alert("Votre inscription est validé");	
+			}
+			else
+				if(repMdpv != repMdp)
+					alert("Vous n'avez pas réécrit le même mot de passe");
+				if(repMdp.length<=6)
+					alert("votre mot de passe ne respecte pas les critère demandé");
+		}
+	</script>
+
+</body>
+
+
+</html>
