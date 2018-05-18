@@ -10,7 +10,7 @@ h1{
 	color: aqua;
 }
 
-form{
+form#insco{
 	text-align: center;
 }
 
@@ -44,6 +44,50 @@ label{
 	height: 50px;
 }
 
+textarea#dialog{
+     width: 150px;
+     height: 400px;
+     background-color: red;
+     resize:none;
+}
+
+textarea#dialog textarea{
+     width: 130px;
+     background-color: blue;
+     resize:none;
+}
+
+textarea#dialogmess{
+     width: 150px;
+     height: 100px;
+     background-color: pink;
+     resize:none;
+}
+
+textarea#texte{
+    resize:none;    
+     width: 800px;
+     height: 500px;
+     background-color: whith;
+}
+
+block form{
+    float: left; 
+}
+block textarea#texte{
+    margin-left:200px;
+}
+
+#envoyer{
+    font-size: 20px;
+    width: 160px;
+    height: 50px;
+}
+
 #Connection{
 	margin-left: 50px;
+	var message=document.getElementById("dialogmess").value;}
+
+#dialog{
+    style : float-left;
 }
