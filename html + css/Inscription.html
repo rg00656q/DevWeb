@@ -9,7 +9,7 @@
 
 <body>
 	<h1>Inscription</h1>
-	<form id="insco" method="post" action="inscription.jsp" >
+	<form id="insco" method="post" action="Inscription">
 		<fieldset>
 			<br/>
 			<label for="repId">Identifiant :</label>
@@ -30,25 +30,15 @@
 			<br/>
 		</fieldset>
 	</form>
-	<button id="valider" onclick="valider()">Valider</button>
+	<button id="valider" action="inscription.jsp"onclick="valider()">Valider</button>
 	<br/>
 	<button id="retour" onclick="document.location.href='menu.html';">Retour</button>
 
 	<script type="text/javascript">
-		function valider(){
-			var idIns=document.getElementById("repId").value;
-			var repMdp=document.getElementById("mdpIns").value;
-			var repMdpv=document.getElementById("mdpvIns").value;
-			if(repMdpv == repMdp && repMdp.length>6){
-				document.location.href='menu.html';
-				alert("Votre inscription est validé");	
+	  function valider(){
+	  
+document.location.href='Inscription';
 			}
-			else
-				if(repMdpv != repMdp)
-					alert("Vous n'avez pas réécrit le même mot de passe");
-				if(repMdp.length<=6)
-					alert("votre mot de passe ne respecte pas les critère demandé");
-		}
 	</script>
 
 </body>
