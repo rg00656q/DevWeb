@@ -211,4 +211,139 @@ public class Connect {
         }
         return null;
     }
+    
+    // Ajout de nouveaux participants au texte f
+    public int ajoutPersonne(String fichier, String mail){
+        try{
+            // Existance de la personne a ajouter dans la bdd
+            req = "SELECT id_u FROM Utilisateurs WHERE email = ?";
+            ps = cnx.prepareStatement(req);
+            ps.setString(1, mail);
+            rs = ps.executeQuery();
+            rs.next();
+            if(rs.getInt(1) < 1){
+                System.out.println("Cette personne n'a pas encore de compte chez nous.");
+                rs.close();
+                ps.close();
+                return -1;
+            }
+            int id_ajout = rs.getInt(1);
+            rs.close();
+            ps.close();
+            
+            // Existance du lien
+            req = "SELECT COUNT(*) FROM Appartient WHERE (id_u = ? AND id_f IN (SELECT id_f FROM Fichiers WHERE titre = ?) )";
+            ps = cnx.prepareStatement(req);
+            ps.setInt(1, id_ajout);
+            ps.setString(2, fichier);
+            rs = ps.executeQuery();
+            rs.next();
+            if(rs.getInt(1) >= 1){ // si le lien existe
+                System.err.println("Persone déjà ajoutée");
+                rs.close();
+                ps.close();
+                return 1;
+            }
+            rs.close();
+            ps.close();
+            
+            // récupération de l'id du fichier
+            req = "SELECT id_f FROM Appartient WHERE (id_u = ? AND id_f IN (SELECT id_f FROM Fichiers WHERE titre = ?) )";
+            ps = cnx.prepareStatement(req);
+            ps.setInt(1, idu);
+            ps.setString(2, fichier);
+            rs = ps.executeQuery();
+            rs.next();
+            int id_f = rs.getInt(1);
+            rs.close();
+            ps.close();
+            
+            req = "INSERT INTO Appartient(id_u,id_f) VALUES (?,?)";
+            ps = cnx.prepareStatement(req);
+            ps.setInt(1, id_ajout);
+            ps.setInt(2, id_f);
+            ps.executeUpdate();
+            rs.close();
+            ps.close();
+            
+        }catch(SQLException ex){
+            Logger.getLogger(Connect.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 1;
+    }
+    
+    // Suppression d'un fichier
+    public int suppFich(String titre){
+        try{
+            // On verifie que c'est une personne qui utilise le fichier qui compte le supprimer
+            req = "SELECT COUNT(*) FROM Appartient WHERE (id_u = ? AND id_f IN (SELECT id_f FROM Fichiers WHERE titre = ?))";
+            ps = cnx.prepareStatement(req);
+            ps.setInt(1, idu);
+            ps.setString(2, titre);
+            rs = ps.executeQuery();
+            rs.next();
+            if(rs.getInt(1) < 1 ){
+                System.err.println("Vous n'avez pas accès à cet élément");
+                rs.close();
+                ps.close();
+                return -1;
+            }
+            
+            // On récupère l'id du fichier
+            req = "SELECT id_f FROM Appartient WHERE (id_u = ? AND id_f IN (SELECT id_f FROM Fichiers WHERE titre = ?))";
+            ps = cnx.prepareStatement(req);
+            ps.setInt(1, idu);
+            ps.setString(2, titre);
+            rs = ps.executeQuery();
+            rs.next();
+            int idf = rs.getInt(1);
+            rs.close();
+            ps.close();
+            
+            // ON supprime les liens
+            req = "DELETE FROM Appartient WHERE id_f = ?";
+            ps = cnx.prepareStatement(req);
+            ps.setInt(1, idf);
+            int resultat = ps.executeUpdate();
+            rs.close();
+            ps.close();
+            
+            // On supprime l'élément
+            req = "DELETE FROM Fichiers WHERE id_f = ?";
+            ps = cnx.prepareStatement(req);
+            ps.setInt(1, idf);
+            resultat = ps.executeUpdate();
+            rs.close();
+            ps.close();
+                        
+        }catch(SQLException ex){
+            Logger.getLogger(Connect.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 1;
+    }
+    
+    // Suppression d'un compte
+    public void suppCompte(){
+        try{
+            // ON supprime les liens
+            req = "DELETE FROM Appartient WHERE id_u = ?";
+            ps = cnx.prepareStatement(req);
+            ps.setInt(1, idu);
+            int resultat = ps.executeUpdate();
+            rs.close();
+            ps.close();
+            
+            // On supprime la personne
+            req = "DELETE FROM Utilisateurs WHERE id_u = ?";
+            ps = cnx.prepareStatement(req);
+            ps.setInt(1, idu);
+            resultat = ps.executeUpdate();
+            rs.close();
+            ps.close();
+            cnx.close();
+            
+        }catch(SQLException ex){
+            Logger.getLogger(Connect.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
