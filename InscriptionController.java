@@ -26,9 +26,12 @@ public class InscriptionController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-		request.getRequestDispatcher("Inscription.jsp").forward(request, response);
+		Connect c = new Connect();
+		String mail = (String) request.getAttribute("id");
+		String pw = (String) request.getAttribute("mdp");
+		c.nouvUtil(mail, pw);
+
+		request.getRequestDispatcher("menu.html").forward(request, response);
 	}
 
 	/**
