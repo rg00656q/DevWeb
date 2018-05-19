@@ -2,6 +2,7 @@
 
 import java.io.IOException;
 import javax.servlet.ServletException;
+import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,10 +27,20 @@ public class InscriptionController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+
+		String mail = (String) request.getParameter("repId");
+		String pw = (String) request.getParameter("mdpIns");
+		String pw2 = (String) request.getParameter("mdpvIns");
+		
+		if(pw.length() < 7 || !pw.equals(pw2)) {
+			request.setAttribute("erreur", 1);
+			request.getRequestDispatcher("Inscription.html").forward(request, response);
+		}
+		
 		Connect c = new Connect();
-		String mail = (String) request.getAttribute("id");
-		String pw = (String) request.getAttribute("mdp");
 		c.nouvUtil(mail, pw);
+		request.setAttribute("erreur", 0);
 
 		request.getRequestDispatcher("menu.html").forward(request, response);
 	}

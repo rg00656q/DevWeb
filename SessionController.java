@@ -30,8 +30,8 @@ public class SessionController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
 		Connect c = new Connect();
-		String mail = (String) request.getAttribute("id");
-		String pw = (String) request.getAttribute("mdp");
+		String mail = (String) request.getParameter("id");
+		String pw = (String) request.getParameter("mdp");
 		
 		if(c.connection(mail, pw) == -1) {
 			out.print("<p> Utilisateur introuvable </p>");
