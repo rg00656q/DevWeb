@@ -25,7 +25,7 @@ public class Connect {
     private String req;
     private int idu;
 
-/*
+/**
  * A utiliser en debut de session
  * Lance une connection au serveur de la base de donnees (nouvelle session)
  */
@@ -45,7 +45,7 @@ public class Connect {
         }
     }
 
-/*
+/**
  * Ajoute un nouvel utilisateur
  * deconnecte la session aussitot finit
  * @param mail l'adresse email du nouvel utilisateur
@@ -101,7 +101,7 @@ public class Connect {
         return result;
     }
 
-/*
+/**
  * Permet à un utilisateur connu de se connecter
  * @param mail l'adresse email de l'utilisateur
  * @param pw le mot de passe de l'utilisateur
@@ -130,7 +130,7 @@ public class Connect {
         return -1;
     }
 
-/*
+/**
  * Permet de deconnecter la session
  */
     public void deconnexion(){
@@ -142,7 +142,7 @@ public class Connect {
         }
     }
 
-/*
+/**
  * Creation d'un nouveau fichier
  * @param title Le titre du fichier qu'on veut creer
  * @return retourne -1 si la creation du fichier est un echec et 1 si c'est un succes
@@ -197,7 +197,7 @@ public class Connect {
         return result;
     }
 
-/*
+/**
  * Recupere la liste de fichiers appartenant a un utilisateur
  * @return retourne la liste des fichiers sous forme d'ArrayList 
  */
@@ -224,7 +224,7 @@ public class Connect {
         return list;
     }
 
-/*
+/**
  * Retourne le fichier selectionné par l'utilisateur
  * @param titre titre du fichier dont on veut afficher le contenu
  * @return renvoie sous forme d'une pair le titre et contenu du fichier (getKey et getValue)
@@ -252,7 +252,7 @@ public class Connect {
         return null;
     }
 
-/*
+/**
  * Sauvegarde du fichier
  * @param titre recupere le titre pour savoir ou le placer dans la bdd
  * @param contenu est le nouveau contenu pour le fichier en cours
@@ -286,7 +286,7 @@ public class Connect {
         return 1;
     }
   
-/*
+/**
  * Ajout de nouveaux participants a un texte
  * on remarque qu'il faut deja avoir un compte pour etre ajoute, et que c'est le createur a la base qui ajoute d'autres createurs
  * @param fichier est le titre du fichier auquel on veut ajouter un participant
@@ -352,7 +352,7 @@ public class Connect {
         return 1;
     }
   
-/*
+/**
  * Suppression d'un fichier
  * @param titre sert a savoir quel fichier on demande la suppression
  * @return renvoie 1 si la suppression est realisee
@@ -406,7 +406,7 @@ public class Connect {
         return 1;
     }
   
-/*
+/**
  * Suppression de notre compte
  * Deconnecte la session si fait
  */
