@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 import javafx.util.Pair;
 
 /**
- *
+ * Implementation de la base de donnees
  * @author Guillaume
  */
 public class Connect {
@@ -25,7 +25,10 @@ public class Connect {
     private String req;
     private int idu;
 
-    // A utiliser en début de session (cad avant tout le reste)
+/*
+ * A utiliser en debut de session
+ * Lance une connection au serveur de la base de donnees (nouvelle session)
+ */
     public Connect(){
         try{
             Class.forName("com.mysql.jdbc.Driver");
@@ -42,7 +45,13 @@ public class Connect {
         }
     }
 
-    // Ajoute un nouvel utilisateur
+/*
+ * Ajoute un nouvel utilisateur
+ * deconnecte la session aussitot finit
+ * @param mail l'adresse email du nouvel utilisateur
+ * @param pw le mot de passe du nouvel utilisateur
+ * @return renvoie -1 s'il y a eu une erreur
+ */
     public int nouvUtil(String mail, String pw){
         int result = 1;
         try {
@@ -92,7 +101,12 @@ public class Connect {
         return result;
     }
 
-    // Permet a un utilisateur connu de se co
+/*
+ * Permet à un utilisateur connu de se connecter
+ * @param mail l'adresse email de l'utilisateur
+ * @param pw le mot de passe de l'utilisateur
+ * @return renvoie -1 dans le cas d'un probleme
+ */
     public int connection(String mail, String pw){
         try {
             // Verification du mail et mdp
@@ -116,7 +130,9 @@ public class Connect {
         return -1;
     }
 
-    // Fait deconnecter du serveur (pour déconnexion)
+/*
+ * Permet de deconnecter la session
+ */
     public void deconnexion(){
         try{
             idu = 0;
@@ -126,15 +142,32 @@ public class Connect {
         }
     }
 
-    // Création d'un nouveau fichier
+/*
+ * Creation d'un nouveau fichier
+ * @param title Le titre du fichier qu'on veut creer
+ * @return retourne -1 si la creation du fichier est un echec et 1 si c'est un succes
+ */
     public int nouvFich(String title){
         int result = 1;
         try {
+            // Verification qu'il n'y ai pas 2x le même titre
+            req = "SELECT COUNT(*) FROM Fichiers WHERE titre = ?";
+            ps = cnx.prepareStatement(req);
+            ps.setString(1, title);
+            rs = ps.executeQuery();
+            rs.next();
+            if(rs.getInt(1) >= 1){
+                System.err.println("Le fichier existe déjà, ou bien il a été créé par un autre utilisateur");
+                rs.close();
+                ps.close();
+                return -1;
+            }
+            
             // Ajout du fichier
             req = "INSERT INTO Fichiers(titre,contenu) VALUES (?,?)";
             ps = cnx.prepareStatement(req, ps.RETURN_GENERATED_KEYS);
             ps.setString(1, title);
-            ps.setString(2, "Ceci est un test");
+            ps.setString(2, "Ceci est le texte par défaut");
             result = ps.executeUpdate();
             if(result == 0) {
                 System.out.println("erreur d'ajout du fichier");
@@ -164,7 +197,10 @@ public class Connect {
         return result;
     }
 
-    // Retourne la liste des textes (sous forme d'ArrayList)
+/*
+ * Recupere la liste de fichiers appartenant a un utilisateur
+ * @return retourne la liste des fichiers sous forme d'ArrayList 
+ */
     public ArrayList recupTxts(){
         ArrayList<String> list = new ArrayList<>();
         try {
@@ -188,7 +224,11 @@ public class Connect {
         return list;
     }
 
-    // Retourne le fichier selectionné par l'utilisateur (on utilise getKey et getValue pour le titre et le contenu)
+/*
+ * Retourne le fichier selectionné par l'utilisateur
+ * @param titre titre du fichier dont on veut afficher le contenu
+ * @return renvoie sous forme d'une pair le titre et contenu du fichier (getKey et getValue)
+ */
     public Pair<String,String> affTxt(String titre){
         try{
             if(idu == 0){
@@ -211,8 +251,13 @@ public class Connect {
         }
         return null;
     }
-    
-    // Sauvegarde du fichier
+
+/*
+ * Sauvegarde du fichier
+ * @param titre recupere le titre pour savoir ou le placer dans la bdd
+ * @param contenu est le nouveau contenu pour le fichier en cours
+ * @return renvoie -1 si la sauvegarde a rencontre un probleme
+ */
     public int sauvegarde(String titre, String contenu){
         try{
             req = "SELECT id_f FROM Fichiers WHERE (titre = ? AND id_f IN (SELECT id_f FROM Appartient WHERE id_u = ?) )";
@@ -240,8 +285,14 @@ public class Connect {
         }
         return 1;
     }
-    
-    // Ajout de nouveaux participants au texte f
+  
+/*
+ * Ajout de nouveaux participants a un texte
+ * on remarque qu'il faut deja avoir un compte pour etre ajoute, et que c'est le createur a la base qui ajoute d'autres createurs
+ * @param fichier est le titre du fichier auquel on veut ajouter un participant
+ * @param mail est l'adresse email du participant a ajouter
+ * @return renvoie 1 si tout s'est bien passe et -1 sinon
+ */
     public int ajoutPersonne(String fichier, String mail){
         try{
             // Existance de la personne a ajouter dans la bdd
@@ -300,8 +351,12 @@ public class Connect {
         }
         return 1;
     }
-    
-    // Suppression d'un fichier
+  
+/*
+ * Suppression d'un fichier
+ * @param titre sert a savoir quel fichier on demande la suppression
+ * @return renvoie 1 si la suppression est realisee
+ */
     public int suppFich(String titre){
         try{
             // On verifie que c'est une personne qui utilise le fichier qui compte le supprimer
@@ -350,8 +405,11 @@ public class Connect {
         }
         return 1;
     }
-    
-    // Suppression d'un compte
+  
+/*
+ * Suppression de notre compte
+ * Deconnecte la session si fait
+ */
     public void suppCompte(){
         try{
             // ON supprime les liens
