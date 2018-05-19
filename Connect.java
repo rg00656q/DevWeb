@@ -212,6 +212,35 @@ public class Connect {
         return null;
     }
     
+    // Sauvegarde du fichier
+    public int sauvegarde(String titre, String contenu){
+        try{
+            req = "SELECT id_f FROM Fichiers WHERE (titre = ? AND id_f IN (SELECT id_f FROM Appartient WHERE id_u = ?) )";
+            ps = cnx.prepareStatement(req);
+            ps.setString(1, titre);
+            ps.setInt(2, idu);
+            rs = ps.executeQuery();
+            rs.next();
+            int idf = rs.getInt(1);
+            rs.close();
+            ps.close();
+            
+            req = "UPDATE Fichiers SET contenu = ? WHERE id_f = ?";
+            ps = cnx.prepareStatement(req);
+            ps.setString(1, contenu);
+            ps.setInt(2, idf);
+            int resultat = ps.executeUpdate();
+            if(resultat != 1){
+                System.err.println("Une erreur est survenue");
+            }
+            ps.close();
+            
+        }catch(SQLException ex){
+            Logger.getLogger(Connect.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 1;
+    }
+    
     // Ajout de nouveaux participants au texte f
     public int ajoutPersonne(String fichier, String mail){
         try{
